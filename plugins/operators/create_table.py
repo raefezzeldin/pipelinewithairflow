@@ -17,7 +17,7 @@ class CreateTableOperator(BaseOperator):
         redshift = PostgresHook(postgres_conn_id = self.redshift_conn_id)
 
         self.log.info('Executing creating tables in Redshift.')
-        queries =  open('/usr/local/airflow/plugins/helpers/create_tables.sql', 'r').read()
+        queries =  open('/home/workspace/airflow/plugins/helpers/create_tables.sql', 'r').read()
         redshift.run(queries)
         
         self.log.info("Tables created ")
