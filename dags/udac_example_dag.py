@@ -5,7 +5,7 @@ from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators import ( CreateTableOperator, StageToRedshiftOperator, LoadFactOperator,
                                 LoadDimensionOperator, DataQualityOperator)
 from helpers import SqlQueries
-from sparkify_dimension_subdag import load_dimension_subdag
+from sparkify_subdag import load_dimension_subdag
 from airflow.operators.subdag_operator import SubDagOperator
 
 
