@@ -74,10 +74,11 @@ On the create connection page, enter the following values:
 ![Admin Tab](https://github.com/raefezzeldin/pipelinewithairflow/blob/master/Screenshots/connection-aws-credentials.png)
 
 
-Conn Id: Enter aws_credentials.
-Conn Type: Enter Amazon Web Services.
-Login: Enter your Access key ID from the IAM User credentials you downloaded earlier.
-Password: Enter your Secret access key from the IAM User credentials you downloaded earlier.
+1. Conn Id: Enter aws_credentials.
+2. Conn Type: Enter Amazon Web Services.
+3. Login: Enter your Access key ID from the IAM User credentials you downloaded earlier.
+4. Password: Enter your Secret access key from the IAM User credentials you downloaded earlier.
+
 Once you've entered these values, select Save and Add Another.
 
 
@@ -85,15 +86,12 @@ On the next create connection page, enter the following values:
 
 ![Admin Tab](https://github.com/raefezzeldin/pipelinewithairflow/blob/master/Screenshots/connection-redshift.png)
 
-Conn Id: Enter redshift.
-Conn Type: Enter Postgres.
-Host: Enter the endpoint of your Redshift cluster, excluding the port at the end. You can find this by selecting your cluster in the Clusters page of the Amazon Redshift console. See where this is located in the screenshot below. IMPORTANT: Make sure to NOT include the port at the end of the Redshift endpoint string.
-Schema: Enter dev. This is the Redshift database you want to connect to.
-Login: Enter awsuser.
-Password: Enter the password you created when launching your Redshift cluster.
-Port: Enter 5439.
+1. Conn Id: Enter redshift.
+2. Conn Type: Enter Postgres.
+3. Host: Enter the endpoint of your Redshift cluster, excluding the port at the end. You can find this by selecting your cluster in the Clusters page of the Amazon Redshift console. See where this is located in the screenshot below. IMPORTANT: Make sure to NOT include the port at the end of the Redshift endpoint string.
+4. Schema: Enter dev. This is the Redshift database you want to connect to.
+5. Login: Enter awsuser.
+6. Password: Enter the password you created when launching your Redshift cluster.
+7. Port: Enter 5439.
+
 Once you've entered these values, select Save.
-
-
-
-Awesome! You're now all configured to run Airflow with Redshift.
