@@ -3,32 +3,44 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class DataQualityOperator(BaseOperator):
-
     ui_color = '#89DA59'
 
     @apply_defaults
     def __init__(self,
+                 dq_checks=[],
                  redshift_conn_id="",
-                 tables = [],
                  *args, **kwargs):
 
         super(DataQualityOperator, self).__init__(*args, **kwargs)
+        self.dq_checks = dq_checks
         self.redshift_conn_id = redshift_conn_id
-        self.tables = tables
 
     def execute(self, context):
-        redshift_hook = PostgresHook(postgres_conn_id = self.redshift_conn_id)
+        if len(self.dq_checks) <= 0:
+            self.log.info("No data quality checks provided")
+            return
         
-        for table in self.tables:
-            
-            self.log.info(f"Starting data quality validation on table : {table}")
-            records = redshift_hook.get_records(f"select count(*) from {table};")
+        redshift_hook = PostgresHook(self.redshift_conn_id)
+        error_count = 0
+        failing_tests = []
+        
+        for check in self.dq_checks:
+            sql = check.get('check_sql')
+            exp_result = check.get('expected_result')
 
-            if len(records) < 1 or len(records[0]) < 1 or records[0][0] < 1:
-                self.log.error(f"Data Quality validation failed for table : {table}.")
-                raise ValueError(f"Data Quality validation failed for table : {table}")
-            self.log.info(f"Data Quality Validation Passed on table : {table}!!!")            
-            
-            
-        
-        self.log.info('DataQualityOperator not implemented yet')
+            try:
+                self.log.info(f"Running query: {sql}")
+                records = redshift_hook.get_records(sql)[0]
+            except Exception as e:
+                self.log.info(f"Query failed with exception: {e}")
+
+            if exp_result != records[0]:
+                error_count += 1
+                failing_tests.append(sql)
+
+        if error_count > 0:
+            self.log.info('Tests failed')
+            self.log.info(failing_tests)
+            raise ValueError('Data quality check failed')
+        else:
+            self.log.info("All data quality checks passed")

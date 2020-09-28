@@ -13,12 +13,12 @@ from airflow.operators.subdag_operator import SubDagOperator
 #AWS_SECRET = os.environ.get('AWS_SECRET')
 
 s3_bucket = 'udacity-dend'
-song_s3_key = "song_data"
+song_s3_key = "song_data/A/A/A"
 log_s3_key = "log-data"
 log_json_file = "log_json_path.json"
 
 default_args = {
-    'owner': 'udacity',
+    'owner': 'udacity-Raef',
     'depends_on_past': True,
     'start_date': datetime(2019, 1, 12),
     'email_on_failure': False,
@@ -28,7 +28,7 @@ default_args = {
     'catchup': True
 }
 
-dag_name = 'udac_example_dag' 
+dag_name = 'Sparkify-etl-DAG' 
 dag = DAG(dag_name,
           default_args=default_args,
           description='Load and transform data in Redshift with Airflow',
@@ -144,7 +144,16 @@ run_quality_checks = DataQualityOperator(
     task_id='Run_data_quality_checks',
     dag=dag,
     redshift_conn_id = "redshift",
-    tables = ["artists", "songplays", "songs", "time", "users"]
+     dq_checks=[
+        { 'check_sql': 'SELECT COUNT(*) FROM public.songplays WHERE userid IS NULL', 'expected_result': 0 }, 
+        { 'check_sql': 'SELECT COUNT(DISTINCT "level") FROM public.songplays', 'expected_result': 2 },
+        { 'check_sql': 'SELECT COUNT(*) FROM public.artists WHERE name IS NULL', 'expected_result': 0 },
+        { 'check_sql': 'SELECT COUNT(*) FROM public.songs WHERE title IS NULL', 'expected_result': 0 },
+        { 'check_sql': 'SELECT COUNT(*) FROM public.users WHERE first_name IS NULL', 'expected_result': 0 },
+        { 'check_sql': 'SELECT COUNT(*) FROM public."time" WHERE weekday IS NULL', 'expected_result': 0 },
+        { 'check_sql': 'SELECT COUNT(*) FROM public.songplays sp LEFT OUTER JOIN public.users u ON u.userid = sp.userid WHERE u.userid IS NULL', \
+         'expected_result': 0 }
+    ]
     
 )
 
